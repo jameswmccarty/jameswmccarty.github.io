@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8"/>
+<title>Dice Roller for Betrayal at House on the Hill...and more!</title>
+<body>
+<script src="./dice.js"></script>
+<img src="./img/logo.svg" alt="dice roller" width="175"/>
+<em>&mdash; "Never say die!"</em>
+<p>Select a quantity of dice to roll of type:</p>
+<ul>
+	<li>2-sided  (<em>sides [0(T), 1(H)]</em>)</li>
+	<li>3-sided  (<em>sides [0,1,2]</em>)</li>
+	<li>6-sided  (<em>sides [1,2,3,4,5,6]</em>)</li>
+	<li>8-sided  (<em>sides [1,2,3,4,5,6,7,8]</em>)</li>
+	<li>12-sided (<em>sides [1,2,3,4,5,6,7,8,9,10,11,12]</em>)</li>
+</ul>
+<p>You may roll up to two sets of dice.</p>
+<style>
+    .fieldset-auto-width {
+         display: inline-block;
+    }
+	table, td, th { border: 1px solid gray }
+</style>
+<table>
+	<tr>
+		<td>
+			<div>
+				<fieldset class="fieldset-auto-width">
+					<legend>Select type (Set 1)</legend>
+						<div>
+							<input type="radio" id="twoside1" name="dietype1">
+							<label for="twoside1">2 Sided (Coin Toss)</label>
+						</div>
+						<div>
+							<input type="radio" id="threeside1" name="dietype1">
+							<label for="threeside1">3 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="sixside1" name="dietype1" checked/>
+							<label for="sixside1">6 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="eightside1" name="dietype1">
+							<label for="eightside1">8 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="twelveside1" name="dietype1">
+							<label for="twelveside1">12 Sided</label>
+						</div>
+				</fieldset>
+			</div>
+		</td>
+		<td>	
+			<div>
+				<fieldset class="fieldset-auto-width">
+					<legend>Select type (Set 2)</legend>
+						<div>
+							<input type="radio" id="twoside2" name="dietype2">
+							<label for="twoside2">2 Sided (Coin Toss)</label>
+						</div>
+						<div>
+							<input type="radio" id="threeside2" name="dietype2">
+							<label for="threeside2">3 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="sixside2" name="dietype2" checked/>
+							<label for="sixside2">6 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="eightside2" name="dietype2">
+							<label for="eightside2">8 Sided</label>
+						</div>
+						<div>
+							<input type="radio" id="twelveside2" name="dietype2">
+							<label for="twelveside2">12 Sided</label>
+						</div>
+				</fieldset>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p style="font-size:16pt;">Qty: <input type="number" id="num_dice1" style="font-size:18pt; width:4em;" value="1" min="1" max="1000"/></p>
+		</td>
+		<td>
+			<p style="font-size:16pt;">Qty: <input type="number" id="num_dice2" style="font-size:18pt; width:4em;" value="0" min="0" max="1000"/></p>
+		</td>
+	</tr>
+</table>
+<input type="button" 
+		id="roll_button" 
+		value="Roll" 
+		style="font-size:18pt;" 
+		onclick="rollDice(document.getElementById('num_dice1').value,document.getElementById('num_dice2').value);"/>
+<p id="results"></p>
+</body>
+</html>

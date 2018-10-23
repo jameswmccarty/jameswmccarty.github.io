@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="149.35mm" height="66.071mm" version="1.1" viewBox="0 0 149.35 66.071" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-19.899 -47.024)" stroke-linejoin="round">
+  <g transform="matrix(2.5778 0 0 2.5778 19.9 47.025)" stroke="#000" stroke-linecap="round">
+   <rect transform="scale(-1,1)" x="-18.415" y=".75001" width="17.665" height="17.665" ry="1.9987e-6" fill="#fff" stroke-width="1.5001"/>
+   <circle transform="matrix(-.70711 -.70711 -.70711 .70711 0 0)" cx="-6.3254" cy="-.053705" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="matrix(-.70711 -.70711 -.70711 .70711 0 0)" cx="-13.552" cy="-2.1268e-7" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="rotate(225)" cx="-20.67" cy=".053705" r="1.7373" stroke-width="1.5001"/>
+  </g>
+  <g transform="matrix(2.2324 1.2889 -1.2889 2.2324 66.662 46.317)" stroke="#000" stroke-linecap="round">
+   <rect transform="scale(-1,1)" x="-18.415" y=".75001" width="17.665" height="17.665" ry="1.9987e-6" fill="#fff" stroke-width="1.5001"/>
+   <circle transform="matrix(-.70711 -.70711 -.70711 .70711 0 0)" cx="-6.3254" cy="-.053705" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="rotate(225)" cx="-20.67" cy=".053705" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="rotate(135)" cx="7.1188" cy="-13.498" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="matrix(-.70711 .70711 .70711 .70711 0 0)" cx="-7.2262" cy="13.498" r="1.7373" stroke-width="1.5001"/>
+   <circle transform="rotate(225)" cx="-13.552" cy="-1.3004e-7" r="1.7373" stroke-width="1.5001"/>
+  </g>
+  <text x="119.44048" y="64.166656" fill="#000000" font-family="'Adobe Helvetica'" font-size="22.578px" font-weight="bold" letter-spacing="0px" stroke-width=".26458px" text-align="center" text-anchor="middle" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="119.44048" y="64.166656">dice</tspan><tspan x="119.44048" y="92.388878">       roller</tspan></text>
+ </g>
+</svg>
