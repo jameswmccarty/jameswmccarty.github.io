@@ -27,7 +27,7 @@
 		</style>
 	</head>
 	<body>
-	<div>
+	<div id="header">
 		<label for="timestep">Time Step: </label>
 		<input name="timestep"  type="range" id="timestep" min=1 max=25 value=10>
 		<label for="timestep"  id="timestep-output">10</label>
@@ -251,9 +251,10 @@
 		}
 		
 		function addNewBody(event) {
+			var headerHeight = document.getElementById('header').clientHeight;
 			var tmp = new body(bodies.length);
 			tmp.x = event.clientX;
-			tmp.y = event.clientY;
+			tmp.y = event.clientY - headerHeight;
 			bodies.push(tmp);
 		}
 		
