@@ -17,6 +17,12 @@
 				padding: 0;
 				background-color: rgba(128,128,145,200);
 			}
+			
+			#footer {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+			}
 
 		</style>
 	</head>
@@ -27,7 +33,7 @@
 		<label for="timestep"  id="timestep-output">10</label>
 		<label>&nbsp;&nbsp;</label>
 		<label for="solarmass">Solar Mass: </label>
-		<input name="solarmass"  type="range" id="solarmass" min=1 max=500000 value=10000>
+		<input name="solarmass"  type="range" id="solarmass" min=0 max=500000 value=10000>
 		<label for="solarmass"  id="solarmass-output">10000</label>
 		<br/>
 		<label for="gravity">Grav Const: </label>
@@ -39,6 +45,9 @@
 		<label for="softening"  id="softening-output">25</label>
 	</div>
 		<canvas id="cw"></canvas>
+	<div id="footer">
+		<span style="color:grey;"><button id='clearBodies' onclick="clearBodies();">clear</button> &nbsp; Click to add new planets</span>
+	</div>
 	</body>
 		<script>
 		
@@ -48,6 +57,7 @@
 		var solarmass = 10000;
 		var soft = 25;
 		var G = 1.0;
+		var reset = 0;
 
 		const ts_controlOut = document.getElementById('timestep-output');
 		const ts_control    = document.getElementById('timestep');
@@ -234,6 +244,10 @@
 				e.calc_acc();
 				e.time_step(dt);
 			});
+			if(reset==1) {
+				reset = 0;
+				bodies = [bodies[0]];
+			}
 		}
 		
 		function addNewBody(event) {
@@ -241,6 +255,10 @@
 			tmp.x = event.clientX;
 			tmp.y = event.clientY;
 			bodies.push(tmp);
+		}
+		
+		function clearBodies() {
+			reset = 1;
 		}
 
 		document.addEventListener("click", addNewBody);
