@@ -15,7 +15,7 @@
 			body {
 				margin: 0;
 				padding: 0;
-				background-color: rgba(128,128,128,200);
+				background-color: rgba(128,128,145,200);
 			}
 
 		</style>
@@ -59,8 +59,8 @@
 			c = cn.getContext('2d');
 			
 			var sun = new body(0);
-			sun.x = Math.floor(innerWidth / 2);
-			sun.y = Math.floor(innerHeight / 2);
+			sun.x = innerWidth / 2;
+			sun.y = innerHeight / 2;
 			sun.z = 5;
 			sun.mass = 7000;
 			sun.vel = [0,0,0];
@@ -84,14 +84,14 @@
 		function resize() {
 			cn.height = innerHeight;
 			cn.width = innerWidth;
-			let dx = Math.floor(innerWidth / 2) - bodies[0].x;
-			let dy = Math.floor(innerHeight / 2) - bodies[0].y;
-			bodies[0].x = Math.floor(innerWidth / 2);
-			bodies[0].y = Math.floor(innerHeight / 2);
+			let dx = innerWidth / 2 - bodies[0].x;
+			let dy = innerHeight / 2 - bodies[0].y;
+			bodies[0].x = innerWidth / 2;
+			bodies[0].y = innerHeight / 2;
 			for(var i=1;i<bodies.length; i++) {
 				bodies[i].x += dx;
 				bodies[i].y += dy;
-				bodies[i].last = [];
+				//bodies[i].last = [];
 			}
 		}
 		
@@ -100,7 +100,7 @@
 			this.x = Math.random() * innerWidth;
 			this.y = Math.random() * innerHeight;
 			this.z = Math.random() * 10;
-			this.last = [];
+			//this.last = [];
 			this.mass = Math.random() * 1000 + 200;
 			this.vel = [Math.random(),Math.random(),0];
 			this.idx = own_idx
@@ -152,7 +152,7 @@
 					if(sun_width >= 0) {
 						c.beginPath();
 						c.strokeStyle = this.cc;
-						c.arc(Math.floor(this.x), Math.floor(this.y), sun_width, 0, 2*Math.PI);
+						c.arc(this.x, this.y, sun_width, 0, 2*Math.PI);
 						c.stroke();
 						c.closePath();
 					}
@@ -176,8 +176,7 @@
 					//c.arcTo((Math.floor(this.x)+lx)/2, (Math.floor(this.y)+ly)/2,Math.floor(this.x),Math.floor(this.y),arc_rad);
 					//c.arc(Math.floor(this.x), Math.floor(this.y), 1, 0, 2*Math.PI);
 					//c.stroke();
-					c.arc(Math.floor(this.x), Math.floor(this.y), this.r, 0, 2*Math.PI);
-
+					c.arc(this.x, this.y, this.r, 0, 2*Math.PI);
 					c.stroke();
 					c.fill();
 					c.closePath();
@@ -188,13 +187,17 @@
 		
 		function anim() {
 			requestAnimationFrame(anim);
+			let dt = timestep/100;
 			c.fillStyle = "rgba(0,0,0,0.06)";
 			c.fillRect(0, 0, cn.width, cn.height);
 			bodies.forEach(function(e, i) {
-				let dt = timestep/100;
 				e.time_step(dt)
 				e.pos_step(dt)
+			});
+			bodies.forEach(function(e, i) {
 				e.dr();
+			});
+			bodies.forEach(function(e, i) {
 				e.calc_acc();
 				e.time_step(dt);
 			});
