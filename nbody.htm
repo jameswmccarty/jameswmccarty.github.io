@@ -29,6 +29,14 @@
 		<label for="solarmass">Solar Mass: </label>
 		<input name="solarmass"  type="range" id="solarmass" min=1 max=500000 value=10000>
 		<label for="solarmass"  id="solarmass-output">10000</label>
+		<label>&nbsp;&nbsp;</label>
+		<label for="gravity">Gravity Const: </label>
+		<input name="gravity"  type="range" id="gravity" min=70 max=200 value=100>
+		<label for="gravity"  id="gravity-output">100</label>
+		<label>&nbsp;&nbsp;</label>
+		<label for="softening">Softening Factor: </label>
+		<input name="softening"  type="range" id="softening" min=1 max=75 value=25>
+		<label for="softening"  id="softening-output">25</label>
 	</div>
 		<canvas id="cw"></canvas>
 	</body>
@@ -38,6 +46,8 @@
 		var sun_delta = 1;
 		var timestep = 10;
 		var solarmass = 10000;
+		var soft = 25;
+		var G = 1.0;
 
 		const ts_controlOut = document.getElementById('timestep-output');
 		const ts_control    = document.getElementById('timestep');
@@ -49,6 +59,19 @@
 		const sm_control    = document.getElementById('solarmass');
 			sm_control.oninput = () => {
 				sm_controlOut.textContent = solarmass = sm_control.value;
+		};
+
+		const grav_controlOut = document.getElementById('gravity-output');
+		const grav_control    = document.getElementById('gravity');
+			grav_control.oninput = () => {
+				grav_controlOut.textContent = grav_control.value;
+				G = grav_control.value / 100;
+		};
+
+		const soft_controlOut = document.getElementById('softening-output');
+		const soft_control    = document.getElementById('softening');
+			soft_control.oninput = () => {
+				soft_controlOut.textContent = soft = soft_control.value;
 		};
 		
 		var cn;
@@ -128,9 +151,8 @@
 						let dx = bodies[i].x-this.x;
 						let dy = bodies[i].y-this.y;
 						let dz = bodies[i].z-this.z;
-						let soft = 25;
 						var r = (dx**2+dy**2+dz**2+soft**2)**(-1.5);
-						var tmp = bodies[i].mass * r;
+						var tmp = bodies[i].mass * r * G;
 						this.acc[0] += tmp * dx;
 						this.acc[1] += tmp * dy;
 						this.acc[2] += tmp * dz;
