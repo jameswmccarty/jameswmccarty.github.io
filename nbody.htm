@@ -252,6 +252,9 @@
 		
 		function addNewBody(event) {
 			var headerHeight = document.getElementById('header').clientHeight;
+			if((event.clientY - headerHeight) < 0) {
+				return; //don't place planet out of bounds
+			}
 			var tmp = new body(bodies.length);
 			tmp.x = event.clientX;
 			tmp.y = event.clientY - headerHeight;
