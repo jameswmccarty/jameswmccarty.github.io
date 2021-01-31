@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>N-body Simulation</title>
+
+		<style>
+			#cw {
+				position: fixed;
+				z-index: -1;
+			}
+
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: rgba(128,128,128,200);
+			}
+
+		</style>
+	</head>
+	<body>
+	<div>
+		<label for="timestep">Time Step: </label>
+		<input name="timestep"  type="range" id="timestep" min=1 max=25 value=10>
+		<label for="timestep"  id="timestep-output">10</label>
+	</div>
+		<canvas id="cw"></canvas>
+	</body>
+		<script>
+		
+		var sun_width = 50;
+		var sun_delta = 1;
+		var timestep = 10;
+
+		const ts_controlOut = document.getElementById('timestep-output');
+		const ts_control    = document.getElementById('timestep');
+			ts_control.oninput = () => {
+				ts_controlOut.textContent = timestep = ts_control.value;
+		};
+		
+		var cn;
+		var c;
+		function gc() {
+			var s = "0123456789ABCDEF";
+			var c = "#";
+			for (var i = 0; i < 6; i++) {
+				c += s[Math.ceil(Math.random() * 15)]
+			}
+		return c
+		}
+
+		var num_bodies = 80;
+		var bodies = [];
+		
+		window.onload = function myfunction() {
+			cn = document.getElementById('cw');
+			c = cn.getContext('2d');
+			
+			var sun = new body(0);
+			sun.x = Math.floor(innerWidth / 2);
+			sun.y = Math.floor(innerHeight / 2);
+			sun.z = 5;
+			sun.mass = 7000;
+			sun.vel = [0,0,0];
+			//sun.cc = "#AABBCC04";
+			bodies.push(sun);
+
+			for (var i=1; i < num_bodies; i++) {
+				var t = new body(i);
+				bodies.push(t);
+			}
+
+			c.globalAlpha = 0.5;
+			resize();
+			anim();
+		}
+
+		window.onresize = function() {
+			resize();
+		}
+
+		function resize() {
+			cn.height = innerHeight;
+			cn.width = innerWidth;
+			let dx = Math.floor(innerWidth / 2) - bodies[0].x;
+			let dy = Math.floor(innerHeight / 2) - bodies[0].y;
+			bodies[0].x = Math.floor(innerWidth / 2);
+			bodies[0].y = Math.floor(innerHeight / 2);
+			for(var i=1;i<bodies.length; i++) {
+				bodies[i].x += dx;
+				bodies[i].y += dy;
+				bodies[i].last = [];
+			}
+		}
+		
+		function body(own_idx) {
+			this.cc = gc();
+			this.x = Math.random() * innerWidth;
+			this.y = Math.random() * innerHeight;
+			this.z = Math.random() * 10;
+			this.last = [];
+			this.mass = Math.random() * 1000 + 200;
+			this.vel = [Math.random(),Math.random(),0];
+			this.idx = own_idx
+			this.acc = [0,0,0]
+			this.r = Math.max(1,this.mass / 1200 * 6);
+			
+			this.calc_acc = function() {
+				if (this.idx == 0) {
+					return;
+				}
+				this.acc = [0,0,0];
+				for(var i=0; i<bodies.length; i++) {
+					if(i != this.idx) {
+						let dx = bodies[i].x-this.x;
+						let dy = bodies[i].y-this.y;
+						let dz = bodies[i].z-this.z;
+						let soft = 5;
+						var r = (dx**2+dy**2+dz**2+soft**2)**(-1.5);
+						var tmp = bodies[i].mass * r;
+						this.acc[0] += tmp * dx;
+						this.acc[1] += tmp * dy;
+						this.acc[2] += tmp * dz;
+					}
+				}
+			}
+			
+			this.time_step = function(step) {
+				if (this.idx == 0) {
+					return;
+				}
+				this.vel[0] += this.acc[0] * step/2.0;
+				this.vel[1] += this.acc[1] * step/2.0;
+				this.vel[2] += this.acc[2] * step/2.0;
+			}
+			
+			this.pos_step = function(step) {
+				if (this.idx == 0) {
+					return;
+				}
+				//this.last.push([this.x,this.y])
+				this.x = (this.x + this.vel[0]*step);
+				this.y = (this.y + this.vel[1]*step);
+				this.z = (this.z + this.vel[2]*step);
+			}
+			
+			
+			this.dr = function() {
+				if(this.idx == 0) {
+					if(sun_width >= 0) {
+						c.beginPath();
+						c.strokeStyle = this.cc;
+						c.arc(Math.floor(this.x), Math.floor(this.y), sun_width, 0, 2*Math.PI);
+						c.stroke();
+						c.closePath();
+					}
+					sun_width += sun_delta*timestep/10;
+					if(sun_width >= innerWidth) {
+						sun_width = -20;
+						this.cc = gc();
+					}
+					return;
+				}
+				//if(this.last.length >= 20) {
+					//let lxy = this.last.shift();
+					//let lx = Math.floor(lxy[0]);
+					//let ly = Math.floor(lxy[1]);
+					c.beginPath();
+					c.strokeStyle = this.cc;
+					c.fillStyle = "#FFFFFFAA";
+					//c.moveTo(Math.floor(lx), Math.floor(ly));
+					//c.lineTo(Math.floor(this.x),Math.floor(this.y));
+					//let arc_rad = Math.sqrt(((Math.floor(this.x)+lx)/2)**2+(((Math.floor(this.y)+ly)/2)**2))*0.5;
+					//c.arcTo((Math.floor(this.x)+lx)/2, (Math.floor(this.y)+ly)/2,Math.floor(this.x),Math.floor(this.y),arc_rad);
+					//c.arc(Math.floor(this.x), Math.floor(this.y), 1, 0, 2*Math.PI);
+					//c.stroke();
+					c.arc(Math.floor(this.x), Math.floor(this.y), this.r, 0, 2*Math.PI);
+
+					c.stroke();
+					c.fill();
+					c.closePath();
+				//}
+			}
+			
+		}
+		
+		function anim() {
+			requestAnimationFrame(anim);
+			c.fillStyle = "rgba(0,0,0,0.06)";
+			c.fillRect(0, 0, cn.width, cn.height);
+			bodies.forEach(function(e, i) {
+				let dt = timestep/100;
+				e.time_step(dt)
+				e.pos_step(dt)
+				e.dr();
+				e.calc_acc();
+				e.time_step(dt);
+			});
+		}
+		
+		function addNewBody(event) {
+			var tmp = new body(bodies.length);
+			tmp.x = event.clientX;
+			tmp.y = event.clientY;
+			bodies.push(tmp);
+		}
+
+		document.addEventListener("click", addNewBody);
+
+		</script>
+</html>
+
