@@ -25,6 +25,10 @@
 		<label for="timestep">Time Step: </label>
 		<input name="timestep"  type="range" id="timestep" min=1 max=25 value=10>
 		<label for="timestep"  id="timestep-output">10</label>
+		<label>&nbsp;&nbsp;</label>
+		<label for="solarmass">Solar Mass: </label>
+		<input name="solarmass"  type="range" id="solarmass" min=1 max=500000 value=10000>
+		<label for="solarmass"  id="solarmass-output">10000</label>
 	</div>
 		<canvas id="cw"></canvas>
 	</body>
@@ -33,11 +37,18 @@
 		var sun_width = 50;
 		var sun_delta = 1;
 		var timestep = 10;
+		var solarmass = 10000;
 
 		const ts_controlOut = document.getElementById('timestep-output');
 		const ts_control    = document.getElementById('timestep');
 			ts_control.oninput = () => {
 				ts_controlOut.textContent = timestep = ts_control.value;
+		};
+
+		const sm_controlOut = document.getElementById('solarmass-output');
+		const sm_control    = document.getElementById('solarmass');
+			sm_control.oninput = () => {
+				sm_controlOut.textContent = solarmass = sm_control.value;
 		};
 		
 		var cn;
@@ -62,7 +73,7 @@
 			sun.x = innerWidth / 2;
 			sun.y = innerHeight / 2;
 			sun.z = 5;
-			sun.mass = 7000;
+			sun.mass = solarmass;
 			sun.vel = [0,0,0];
 			//sun.cc = "#AABBCC04";
 			bodies.push(sun);
@@ -117,7 +128,7 @@
 						let dx = bodies[i].x-this.x;
 						let dy = bodies[i].y-this.y;
 						let dz = bodies[i].z-this.z;
-						let soft = 5;
+						let soft = 25;
 						var r = (dx**2+dy**2+dz**2+soft**2)**(-1.5);
 						var tmp = bodies[i].mass * r;
 						this.acc[0] += tmp * dx;
@@ -129,7 +140,7 @@
 			
 			this.time_step = function(step) {
 				if (this.idx == 0) {
-					return;
+					this.mass = solarmass;
 				}
 				this.vel[0] += this.acc[0] * step/2.0;
 				this.vel[1] += this.acc[1] * step/2.0;
