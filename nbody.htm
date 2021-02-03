@@ -15,7 +15,7 @@
 			body {
 				margin: 0;
 				padding: 0;
-				background-color: rgba(128,128,145,200);
+				background-color: rgba(128,128,145,0.8);
 			}
 			
 			#footer {
@@ -46,9 +46,8 @@
 	</div>
 		<canvas id="cw"></canvas>
 	<div id="footer">
-		<span style="color:grey;"><button id='clearBodies' onclick="clearBodies();">clear</button> &nbsp; Click to add new planets</span>
+		<span style="color:grey;"><button id='clearBodies' onclick="clearBodies();">clear</button> &nbsp; Click to add new planets <label id="planet-count">(80 planets)</label></span>
 	</div>
-	</body>
 		<script>
 		
 		var sun_width = 50;
@@ -84,6 +83,8 @@
 				soft_controlOut.textContent = soft = soft_control.value;
 		};
 		
+		const pc_controlOut = document.getElementById('planet-count');
+		
 		var cn;
 		var c;
 		function gc() {
@@ -95,7 +96,7 @@
 		return c
 		}
 
-		var num_bodies = 80;
+		var num_bodies = 81;
 		var bodies = [];
 		
 		window.onload = function myfunction() {
@@ -237,6 +238,7 @@
 				e.time_step(dt)
 				e.pos_step(dt)
 			});
+			sortByZdepth(bodies);
 			bodies.forEach(function(e, i) {
 				e.dr();
 			});
@@ -246,9 +248,11 @@
 			});
 			if(reset==1) {
 				reset = 0;
+				var sun_idx = -1;
 				bodies = [bodies[0]];
 				sun_width = -20;
 				bodies[0].cc = gc();
+				pc_controlOut.textContent = '('+String(bodies.length-1)+') planets'
 			}
 		}
 		
@@ -261,14 +265,23 @@
 			tmp.x = event.clientX;
 			tmp.y = event.clientY - headerHeight;
 			bodies.push(tmp);
+			pc_controlOut.textContent = '('+String(bodies.length-1)+') planets'
 		}
 		
 		function clearBodies() {
 			reset = 1;
 		}
+		
+		function sortByZdepth(array) {
+			return [array[0]] + array.slice(1).sort(function(a, b) {
+				var x = a.z; var y = b.z;
+				return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+			});
+		}
 
 		document.addEventListener("click", addNewBody);
 
 		</script>
+	</body>
 </html>
 
