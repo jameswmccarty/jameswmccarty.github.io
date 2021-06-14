@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Random Interval Timer</title>
+
+		<style>
+
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			
+			table {
+				border: 3px solid black;
+			}
+
+			td {
+				text-align: left;
+				vertical-align: center;
+				padding: 1px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td><p>Min/Max (sec):</p></td>
+				<td><input type="number" id="time_min" value="10" min="1" max="1000" onchange="range_validate()"/></td>
+				<td><input type="number" id="time_max" value="30" min="1" max="1000" onchange="range_validate()"/></td>
+			</tr>
+			<tr>
+				<td><button onclick="toggleTimer();">run/stop</button></td>
+				<td><p>Time Left:</p></td>
+				<td><span id='left_count'>0</span></td>
+		</table>
+
+		<script>
+
+		var max_box = document.getElementById('time_max');
+		var min_box = document.getElementById('time_min');
+		var left_label = document.getElementById('left_count');
+		var time_left;
+		var blocked = 1;
+		var audio = new Audio('alarm.mp3');
+		var timer_handle;
+
+		function toggleTimer() {
+			if(blocked == 1) {
+				blocked = 0;
+				time_left = roll(min_box.value,max_box.value);
+				left_label.innerHTML = String(time_left)
+				timer_handle = setInterval(tick, 1000);
+			}
+			else { 
+				blocked = 1;
+				clearInterval(timer_handle);
+				time_left = 0;
+				left_label.innerHTML = String(time_left);
+			}
+		}
+
+		function roll(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		
+		function range_validate() {
+			max_box.value = Math.max(max_box.value, min_box.value);
+			min_box.value = Math.min(max_box.value, min_box.value);
+		}
+
+		function tick() {
+			if(blocked == 0) {
+				time_left = time_left - 1;
+				if(time_left <= 0) {
+					clearInterval(timer_handle);
+					audio.play();
+					time_left = roll(min_box.value,max_box.value);
+					timer_handle = setInterval(tick, 1000);
+				}
+				left_label.innerHTML = String(time_left)
+			}
+		}
+
+		</script>
+	</body>
+</html>
+
