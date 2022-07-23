@@ -13,7 +13,7 @@ function next_poss_words(word) {
 		for(var c=0; c < 26; c++) {
 			if (lower_alpha[c] != word[i]) {
 				var next_word = word.slice(0,i)+lower_alpha[c]+word.slice(i+1)
-				if(dict.includes(next_word)) {
+				if(next_word in dict) {
 					next_words.push(next_word)
 				}
 			}
@@ -32,19 +32,25 @@ function solveLadder(start_word, end_word) {
 		return;
 	}
 	if (start_word.length == 4) {
-		dict = D;
-		} else { dict = W 
+		dict = {};
+		D.forEach(function(e) {
+			dict[e] = 1;
+		});
+		} else { dict = {}
+		W.forEach(function(e) {
+			dict[e] = 1;
+		}); 
 	}
-	if (!dict.includes(start_word)) {
+	if (!(start_word in dict)) {
 			document.getElementById("results").innerHTML = "<p>Starting word not in dictionary.</p>";
 		return;
 	}
-	if (!dict.includes(end_word)) {
+	if (!(end_word in dict)) {
 			document.getElementById("results").innerHTML = "<p>Ending word not in dictionary.</p>";
 		return;
 	}
 	document.getElementById("results").innerHTML = "<p>Searching...</p>"
-	var seen = []
+	var seen = {}
 	var q = [[start_word,'']]
 	while(q.length > 0) {
 		elem = q.shift()
@@ -57,8 +63,8 @@ function solveLadder(start_word, end_word) {
 		var nexts = next_poss_words(current)
 		while(nexts.length > 0) {
 			next = nexts.shift()
-			if(!seen.includes(next)) {
-				seen.push(next)
+			if(!(next in seen)) {
+				seen[next] = 1
 				q.push([next,chain+","+next])
 			}
 		}
