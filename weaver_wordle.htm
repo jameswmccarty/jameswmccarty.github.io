@@ -1,16 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Weaver Wordle Solver</title>
+<style>
+
+body {
+	background-color: white;
+}
+
+h1, h2, h3 {
+	color: #3e4444;
+	text-transform: capitalize;
+	text-align:center;
+}
+
+.button {
+	font-size: 18px;
+	text-align: center;
+	margin: 0 auto;
+	display: block;
+}
+
+.input {
+	font-size: 18px;
+	text-align: center;
+	margin: 1em auto;
+	display: block;
+	color: gray;
+}
+
+.display {
+	font-size: 1em;
+	color: gray;
+	text-align: center;
+}
+
+</style>
 <body>
 <script src="./weaver.js"></script>
-<p>Enter starting and ending words.</p>
-<p>Start: <input type="text" id="start_word" value=""/></p>
-<p>End: <input type="text" id="end_word" value=""/></p>
-<input type="button" 
+<h1>Weaver Wordle Helper</h1>
+<p class="display">Enter starting and ending words.</p>
+<p class="input">Start: <input type="text" id="start_word" value=""/></p>
+<p class="input">End: <input type="text" id="end_word" value=""/></p>
+<input type="button"
+		class="button"
 		id="solve_button"
 		value="Solve"
 		onclick="solveLadder(document.getElementById('start_word').value.toLowerCase(),document.getElementById('end_word').value.toLowerCase());"/>
-<p id="results"></p>
+<p id="results" class="display"></p>
 </body>
 </html>
