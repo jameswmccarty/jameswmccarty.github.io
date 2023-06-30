@@ -28,9 +28,9 @@
 	</head>
 	<body>
 	<div id="header">
-		<label for="timestep">Time Step: </label>
-		<input name="timestep"  type="range" id="timestep" min=1 max=15 value=10>
-		<label for="timestep"  id="timestep-output">7</label>
+		<label for="timestep">Heat Strength: </label>
+		<input name="timestep"  type="range" id="timestep" min=1 max=255 value=50>
+		<label for="timestep"  id="timestep-output">50</label>
 	</div>
 		<canvas id="cw"></canvas>
 	<div id="footer">
@@ -38,7 +38,7 @@
 	</div>
 		<script>
 
-		var timestep = 7;
+		var timestep = 50;
 		var reset = 0;
 
 		const ts_controlOut = document.getElementById('timestep-output');
@@ -107,7 +107,7 @@
 			this.g = 0;
 			this.b = 0;
 			
-			this.time_step = function(step) {
+			this.time_step = function() {
 				var new_r = 0;
 				var new_g = 0;
 				var new_b = 0;
@@ -153,9 +153,9 @@
 				this.r = new_r;
 				this.g = new_g;
 				this.b = new_b;				
-				this.input_r = Math.max(this.input_r-step,0);
-				this.input_g = Math.max(this.input_g-step,0);
-				this.input_b = Math.max(this.input_b-step,0);
+				this.input_r = Math.max(this.input_r-1,0);
+				this.input_g = Math.max(this.input_g-1,0);
+				this.input_b = Math.max(this.input_b-1,0);
 			}
 			
 			this.dr = function() {
@@ -166,9 +166,9 @@
 		
 		function anim() {
 			requestAnimationFrame(anim);
-			let dt = timestep;
+			//let dt = timestep;
 			bodies.forEach(function(e, i) {
-				e.time_step(dt);
+				e.time_step();
 				e.dr();
 			});
 			//bodies.forEach(function(e, i) {
@@ -199,13 +199,13 @@
 			tmpy = Math.floor(tmpy / innerHeight * grid_size)
 			var channel = roll(1,4);
 			if (channel==1) {
-				bodies[tmpy*grid_size+tmpx].input_r = Math.min(255,bodies[tmpy*grid_size+tmpx].input_r+100);
+				bodies[tmpy*grid_size+tmpx].input_r = Math.min(255,bodies[tmpy*grid_size+tmpx].input_r+timestep);
 			}
 			else if (channel==2) {
-				bodies[tmpy*grid_size+tmpx].input_g = Math.min(255,bodies[tmpy*grid_size+tmpx].input_g+100);
+				bodies[tmpy*grid_size+tmpx].input_g = Math.min(255,bodies[tmpy*grid_size+tmpx].input_g+timestep);
 			}
 			else if (channel==3) {
-				bodies[tmpy*grid_size+tmpx].input_b = Math.min(255,bodies[tmpy*grid_size+tmpx].input_b+100);
+				bodies[tmpy*grid_size+tmpx].input_b = Math.min(255,bodies[tmpy*grid_size+tmpx].input_b+timestep);
 			}
 		}
 		
