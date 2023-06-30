@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Heat Simulation</title>
+
+		<style>
+
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: rgba(128,128,145,0.8);
+			}
+			
+			#footer {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+			}
+
+		</style>
+	</head>
+	<body>
+	<div id="header">
+		<label for="timestep">Time Step: </label>
+		<input name="timestep"  type="range" id="timestep" min=1 max=15 value=10>
+		<label for="timestep"  id="timestep-output">7</label>
+	</div>
+		<canvas id="cw"></canvas>
+	<div id="footer">
+		<span style="color:grey;"><button id='clearBodies' onclick="clearBodies();">reset</button> &nbsp; Click to add new input heat <label id="cell-count">(2500 cells)</label></span>
+	</div>
+		<script>
+
+		var timestep = 7;
+		var reset = 0;
+
+		const ts_controlOut = document.getElementById('timestep-output');
+		const ts_control    = document.getElementById('timestep');
+			ts_control.oninput = () => {
+				ts_controlOut.textContent = timestep = ts_control.value;
+		};
+
+		const pc_controlOut = document.getElementById('cell-count');
+		
+		const cn = document.getElementById('cw');
+		const c = cn.getContext('2d');
+		
+		function gc() {
+			var s = "0123456789ABCDEF";
+			var c = "#";
+			for (var i = 0; i < 6; i++) {
+				c += s[Math.ceil(Math.random() * 15)]
+			}
+			return c;
+		}
+		
+		function roll(lo, hi) { // hi bound not inclusive
+			return Math.floor(Math.random() * (hi-lo) + lo);
+		}
+
+		var grid_size = 75;
+		var bodies = [];
+		
+		window.onload = function myfunction() {
+
+			for (var i=0; i < grid_size*grid_size; i++) {
+				bodies.push(new body(i));
+			}
+			resize();
+			anim();
+		}
+
+		window.onresize = function() {
+			resize();
+		}
+
+		function resize() {
+			cn.height = innerHeight;
+			cn.width = innerWidth;
+			for(var i=0;i<bodies.length; i++) {
+				bodies[i].x = (bodies[i].idx % grid_size / grid_size) * innerWidth;
+				bodies[i].y = Math.floor(bodies[i].idx / grid_size) / grid_size * innerHeight;
+				bodies[i].w = innerWidth / grid_size;
+				bodies[i].h = innerHeight / grid_size;
+			}
+		}
+		
+		function body(own_idx) {
+			this.idx = own_idx;
+			this.x = (own_idx % grid_size) / grid_size * innerWidth;
+			this.y = Math.floor(own_idx / grid_size) / grid_size * innerHeight;
+			this.w = innerWidth / grid_size;
+			this.h = innerHeight / grid_size;
+			//this.heat = 0;
+			this.input_r = 0;
+			this.input_g = 0;
+			this.input_b = 0;
+			//this.cc = gc();
+			this.r = 0;
+			this.g = 0;
+			this.b = 0;
+			
+			this.time_step = function(step) {
+				var new_r = 0;
+				var new_g = 0;
+				var new_b = 0;
+				var sx = this.idx % grid_size;
+				var sy = Math.floor(this.idx/grid_size);
+				var nx;
+				var ny;
+				nx = sx
+				ny = sy+1
+				if (ny < grid_size) {
+					new_r += bodies[ny*grid_size+nx].r
+					new_g += bodies[ny*grid_size+nx].g
+					new_b += bodies[ny*grid_size+nx].b
+				}
+				nx = sx+1
+				ny = sy
+				if (nx < grid_size) {
+					new_r += bodies[ny*grid_size+nx].r
+					new_g += bodies[ny*grid_size+nx].g
+					new_b += bodies[ny*grid_size+nx].b
+				}
+				nx = sx
+				ny = sy-1
+				if (ny >=0) {
+					new_r += bodies[ny*grid_size+nx].r
+					new_g += bodies[ny*grid_size+nx].g
+					new_b += bodies[ny*grid_size+nx].b
+				}
+				nx = sx-1
+				ny = sy
+				if (nx >= 0) {
+					//new_heat += bodies[ny*grid_size+nx].heat
+					new_r += bodies[ny*grid_size+nx].r
+					new_g += bodies[ny*grid_size+nx].g
+					new_b += bodies[ny*grid_size+nx].b
+				}
+				new_r *= 0.25;
+				new_g *= 0.25;
+				new_b *= 0.25;
+				new_r += this.input_r;
+				new_g += this.input_g;
+				new_b += this.input_b;
+				this.r = new_r;
+				this.g = new_g;
+				this.b = new_b;				
+				this.input_r = Math.max(this.input_r-step,0);
+				this.input_g = Math.max(this.input_g-step,0);
+				this.input_b = Math.max(this.input_b-step,0);
+			}
+			
+			this.dr = function() {
+				c.fillStyle = 'rgb('+this.r+','+this.g+','+this.b+')';
+				c.fillRect(this.x,this.y,this.w,this.h);
+			}			
+		}
+		
+		function anim() {
+			requestAnimationFrame(anim);
+			let dt = timestep;
+			bodies.forEach(function(e, i) {
+				e.time_step(dt);
+				e.dr();
+			});
+			//bodies.forEach(function(e, i) {
+			//	e.dr();
+			//});
+			if(reset==1) {
+				reset = 0;
+				for(var i=0;i<bodies.length; i++) {
+					bodies[i].r = 0;
+					bodies[i].g = 0;
+					bodies[i].b = 0;
+					bodies[i].input_r = 0;
+					bodies[i].input_g = 0;
+					bodies[i].input_b = 0;
+				}
+				pc_controlOut.textContent = '('+String(bodies.length)+') cells'
+			}
+		}
+		
+		function addMoreHeat(event) {
+			var headerHeight = document.getElementById('header').clientHeight;
+			if((event.clientY - headerHeight) < 0) {
+				return;
+			}
+			var tmpx = event.clientX;
+			var tmpy = event.clientY - headerHeight;
+			tmpx = Math.floor(tmpx / innerWidth * grid_size)
+			tmpy = Math.floor(tmpy / innerHeight * grid_size)
+			var channel = roll(1,4);
+			if (channel==1) {
+				bodies[tmpy*grid_size+tmpx].input_r = Math.min(255,bodies[tmpy*grid_size+tmpx].input_r+100);
+			}
+			else if (channel==2) {
+				bodies[tmpy*grid_size+tmpx].input_g = Math.min(255,bodies[tmpy*grid_size+tmpx].input_g+100);
+			}
+			else if (channel==3) {
+				bodies[tmpy*grid_size+tmpx].input_b = Math.min(255,bodies[tmpy*grid_size+tmpx].input_b+100);
+			}
+		}
+		
+		function clearBodies() {
+			reset = 1;
+		}
+
+		document.addEventListener("click", addMoreHeat);
+
+		</script>
+	</body>
+</html>
+
